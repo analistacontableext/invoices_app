@@ -19,16 +19,63 @@ Uso:
 """
 import json
 import sys
+import webbrowser
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from urllib.parse import urlparse, parse_qs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import Flow
 
 import script
 
 _OAUTH_CLIENT_FILE = Path(__file__).resolve().parent / "oauth_client.json"
 _SCOPES = ["https://www.googleapis.com/auth/drive"]
+_REDIRECT_URI = "http://localhost:8501"
+
+
+def _obtener_credenciales():
+    """Login OAuth manual con servidor local propio — NO usa
+    InstalledAppFlow.run_local_server(): esa función arma internamente
+    "http://localhost:8501/" (con barra final) sin importar el valor de
+    redirect_uri_trailing_slash (comprobado: el parámetro no tiene efecto en
+    la versión instalada), y como oauth_client.json es tipo "Web
+    application", Google exige coincidencia EXACTA con lo registrado en
+    Cloud Console ("http://localhost:8501", sin barra) — de ahí el
+    "Error 400: redirect_uri_mismatch". Acá se arma la URL a mano (sin
+    barra, verificado que funciona) y se levanta un servidor mínimo para
+    capturar el "code" de la redirección."""
+    flow = Flow.from_client_secrets_file(
+        str(_OAUTH_CLIENT_FILE), scopes=_SCOPES, redirect_uri=_REDIRECT_URI,
+    )
+    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent")
+
+    codigo_capturado = {}
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            query = parse_qs(urlparse(self.path).query)
+            codigo_capturado["code"] = query.get("code", [None])[0]
+            self.send_response(200)
+            self.send_header("Content-type", "text/html; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(
+                "<html><body><h2>Listo, ya podés cerrar esta pestaña.</h2></body></html>".encode("utf-8")
+            )
+
+        def log_message(self, format, *args):
+            pass  # silencia el log de acceso en la terminal
+
+    server = HTTPServer(("localhost", 8501), Handler)
+    print("Abriendo el navegador para iniciar sesión con Google...")
+    webbrowser.open(auth_url)
+    while "code" not in codigo_capturado:
+        server.handle_request()
+    server.server_close()
+
+    flow.fetch_token(code=codigo_capturado["code"])
+    return flow.credentials
 
 
 def _find_folder(service, parent_id, name):
@@ -59,14 +106,12 @@ def _find_folder_by_local_path(service, root_folder_id, root_local_path, target_
 
 
 def main():
-    # port=8501 (no port=0/aleatorio): el oauth_client.json es de tipo "Web
-    # application", que exige que la URI de redirect esté pre-registrada en
-    # Google Cloud Console de forma exacta — hoy solo está registrado
-    # "http://localhost:8501" (el mismo que usa la app). Asegurate de que el
+    # Usa el puerto 8501 (el mismo que la app) porque es el único registrado
+    # como "Authorized redirect URI" en Google Cloud Console para este
+    # oauth_client.json de tipo "Web application". Asegurate de que el
     # servidor Streamlit NO esté corriendo en ese puerto al ejecutar este
     # script (se pisarían).
-    flow = InstalledAppFlow.from_client_secrets_file(str(_OAUTH_CLIENT_FILE), scopes=_SCOPES)
-    creds = flow.run_local_server(port=8501)
+    creds = _obtener_credenciales()
 
     from googleapiclient.discovery import build
     service = build("drive", "v3", credentials=creds, cache_discovery=False)

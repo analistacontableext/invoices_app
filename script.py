@@ -142,46 +142,57 @@ MARCAS = {
     "THEBALM": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/THEBALM_COSMETICS/THEBALM",
         "proveedor": "THEBALM_COSMETICS",
+        "worked_folder_id": "1GjrsFy7R0JkGxQQkx6q0YXZLSYrFObT2"
     },
     "CISNE_NEGRO": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/OCEANIC_TRADE_INVESTMENT/CISNE_NEGRO",
         "proveedor": "OCEANIC_TRADE_INVESTMENT",
+        "worked_folder_id": "1tfWGTe9-gNLqfCihs9Y7StUtdv-D2b6R"
     },
     "HELLO_SUNDAY": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/HELLO_SUNDAY_VENTURES/HELLO_SUNDAY",
         "proveedor": "HELLO_SUNDAY_VENTURES",
+        "worked_folder_id": "1k5GuEFZFiueYT-58Wt-H_YuszWLdY0aB"
     },
     "EARTH_RHYTHM": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/EARTH_RHYTHM_PRIVATE_LIMITED/EARTH_RHYTHM",
         "proveedor": "EARTH_RHYTHM_PRIVATE_LIMITED",
+        "worked_folder_id": "1DW_3iQBjaapWpwxA9IHcmZweLHlh-xzJ"
     },
     "NEW_STUDIO": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/TWEEZERMAN_INTERNATIONAL/NEW_STUDIO",
         "proveedor": "TWEEZERMAN_INTERNATIONAL",
+        "worked_folder_id": "1OGIKBo9Yw81UpGME3qacpZdF1pssWFD9"
     },
     "7_DAYS": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/SOFIS_SRL/7_DAYS",
         "proveedor": "SOFIS_SRL",
+        "worked_folder_id": "18J6UUhcrz3MfuNlOPjPqeZJ14qb9gWk5"
     },
     "FOAMOUS": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/BEYOND_PERFUME_SAS/FOAMOUS",
         "proveedor": "BEYOND_PERFUME_SAS",
+        "worked_folder_id": "11d4c8wj1SUuAmPag2QXi8OYfftNDzMPc"
     },
     "COZI_LIFE": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/TANTUC_ASIA_LTD/COZI_LIFE",
         "proveedor": "TANTUC_ASIA_LTD",
+        "worked_folder_id": "1sY-pCV13c-nRpCx1Ge_gj0dzbULl8SPP"
     },
     "LATAM_CHINA": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/LATAM_CHINA_TRADING/LATAM_CHINA",
         "proveedor": "LATAM_CHINA_TRADING",
+        "worked_folder_id": "1sZhL-e8ifN-HsjNfBRktwsRlrk3ZVNF-"
     },
     "FUJIAN_OUKANG": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/FUJIAN_OUKANG_CO_LTD/FUJIAN_OUKANG",
         "proveedor": "FUJIAN_OUKANG_CO_LTD",
+        "worked_folder_id": "1O22C0m060k4mjNWYqP5s1xRT2NL9THNv"
     },
     "BORLA": {
         "ruta": BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/facturas_pdf/FUJIAN_OUKANG_CO_LTD/BORLA",
         "proveedor": "FUJIAN_OUKANG_CO_LTD",
+        "worked_folder_id": "1rDpv4aSb5xSZWG-4iZiedZrre5yQLqhS"
     },
 }
 OUTPUT_PATH = BASE_PATH / "silver/importaciones/csv"
@@ -202,11 +213,8 @@ CREDENTIALS_FILE = Path(__file__).parent / "credenciales.json"
 SUNAT_DIR = BASE_PATH / "bronze/importaciones/Gerencia_Supply_Preview/sunat_tc"
 
 # ID de Drive de la carpeta de arriba — usado por la app desplegada (sin acceso a
-# filesystem local) vía app/drive_client.py + app/bootstrap.py. PENDIENTE: se
-# completa con el resultado real de discover_drive_ids.py (Fase 3 del plan de
-# migración a Drive API) — hasta entonces, el modo nube de la app no puede
-# sincronizar el tipo de cambio.
-SUNAT_TC_FOLDER_ID = None
+# filesystem local) vía app/drive_client.py + app/bootstrap.py.
+SUNAT_TC_FOLDER_ID = "1zuRY7ctCmdIOXW9gsA5XXt9K67v1Qvxu"
 
 # Página de SUNAT donde se descarga el PDF mensual de tipo de cambio (solo deja
 # bajar un mes por vez) — se linkea desde la app cuando falta un mes.
