@@ -48,6 +48,8 @@ _SCOPES = [
 ALLOWLIST = {
     "analista.contable.ext@lindcorp.pe",
     "brian.campos@lindcorp.pe",
+    "francisco.esparza@lindcorp.pe",
+    "sundry.sahijramani@lindcorp.pe",
 }
 
 # Guarda el code_verifier (PKCE) de cada intento de login, indexado por el
