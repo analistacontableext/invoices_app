@@ -65,11 +65,21 @@ def _client_config() -> dict:
     # En dev local sin secrets.toml, se cae al archivo físico de siempre.
     try:
         if "oauth_client" in st.secrets and "web" in st.secrets["oauth_client"]:
-            return {"web": dict(st.secrets["oauth_client"]["web"])}
+            config = {"web": dict(st.secrets["oauth_client"]["web"])}
+        else:
+            raise KeyError
     except Exception:
-        pass
-    with open(_OAUTH_CLIENT_FILE, encoding="utf-8") as f:
-        return json.load(f)
+        with open(_OAUTH_CLIENT_FILE, encoding="utf-8") as f:
+            config = json.load(f)
+
+    # El oauth_client.json descargado de Cloud Console trae el endpoint viejo
+    # "https://accounts.google.com/o/oauth2/auth", que en proyectos dados de
+    # alta en la consola nueva ("Google Auth Platform") devuelve un 403
+    # genérico antes de mostrar el selector de cuentas — comprobado a mano.
+    # Se fuerza acá el endpoint "v2" (confirmado que funciona) en vez de
+    # depender del valor que traiga el archivo/secrets.
+    config["web"]["auth_uri"] = "https://accounts.google.com/o/oauth2/v2/auth"
+    return config
 
 
 def _client_id() -> str:
