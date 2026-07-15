@@ -55,14 +55,26 @@ ALLOWLIST = {
 _verificadores_pendientes: dict[str, str] = {}
 
 
-def _client_id() -> str:
+def _client_config() -> dict:
+    # En Streamlit Cloud no existe oauth_client.json (queda afuera del repo a
+    # propósito, ver .gitignore) — ahí se arma el mismo dict desde st.secrets.
+    # En dev local sin secrets.toml, se cae al archivo físico de siempre.
+    try:
+        if "oauth_client" in st.secrets and "web" in st.secrets["oauth_client"]:
+            return {"web": dict(st.secrets["oauth_client"]["web"])}
+    except Exception:
+        pass
     with open(_OAUTH_CLIENT_FILE, encoding="utf-8") as f:
-        return json.load(f)["web"]["client_id"]
+        return json.load(f)
+
+
+def _client_id() -> str:
+    return _client_config()["web"]["client_id"]
 
 
 def _flow() -> Flow:
-    return Flow.from_client_secrets_file(
-        str(_OAUTH_CLIENT_FILE), scopes=_SCOPES, redirect_uri=_REDIRECT_URI,
+    return Flow.from_client_config(
+        _client_config(), scopes=_SCOPES, redirect_uri=_REDIRECT_URI,
         autogenerate_code_verifier=True,
     )
 
