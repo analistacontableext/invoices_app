@@ -21,7 +21,11 @@ def _redirect_uri_desde_secrets() -> str:
     # los Streamlit se comportan igual con .get() cuando no hay ningún secreto
     # configurado) — se envuelve en try/except para no romper el import acá.
     try:
-        return st.secrets["oauth_client"]["redirect_uri"]
+        # .rstrip("/"): debe calzar carácter por carácter con lo registrado en
+        # "Authorized redirect URIs" de Google Cloud Console (sin barra final) —
+        # ya nos mordió este mismo bug antes (ver discover_drive_ids.py), acá
+        # se normaliza para no depender de cómo se pegue en secrets.toml.
+        return st.secrets["oauth_client"]["redirect_uri"].rstrip("/")
     except Exception:
         return "http://localhost:8501"
 
