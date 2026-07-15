@@ -157,10 +157,14 @@ def render_login_prompt() -> None:
     _verificadores_pendientes[state] = flow.code_verifier
 
     st.info("Inicia sesión con tu cuenta corporativa de Google para continuar.")
-    # target="_self" a propósito: st.link_button abre en pestaña nueva, lo que
-    # deja dos pestañas de la app abiertas (la original + la que vuelve logueada).
+    # target="_blank" (no "_self"): se comprobó a mano que pegar la URL de
+    # login directo en la barra de direcciones sí funciona, pero el clic sobre
+    # un <a target="_self"> dentro de la app no — algo intercepta la
+    # navegación en la misma pestaña (sospecha: software de seguridad
+    # corporativo tipo "Safe Links"). Abrir en pestaña nueva esquiva eso; el
+    # costo es que quedan dos pestañas abiertas tras loguearse.
     st.markdown(
-        f'<a href="{auth_url}" target="_self" style="display:inline-block; '
+        f'<a href="{auth_url}" target="_blank" style="display:inline-block; '
         f'padding:0.5rem 1.2rem; background:#FA0082; color:white; border-radius:8px; '
         f'text-decoration:none; font-weight:600;">🔐 Iniciar sesión con Google</a>',
         unsafe_allow_html=True,
