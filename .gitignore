@@ -1,0 +1,33 @@
+# Secretos — NUNCA deben subirse al repo
+credenciales.json
+oauth_client.json
+# Patrón amplio a propósito (no solo el nombre exacto): cualquier variante
+# renombrada (secrets.toml.bak, secrets.toml.disabled, etc.) también debe
+# quedar afuera — ya pasó una vez que un rename se coló como "untracked".
+.streamlit/secrets*
+secrets*.toml
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Datos/artefactos locales que no son parte del código desplegado
+*.parquet
+*.ipynb
+script_backup_*.py
+divisas.py
+volumetria.py
+
+# Entornos virtuales / IDE
+.venv/
+venv/
+.vscode/
+.idea/
+
+# Logs y salidas de scripts de una sola vez
+*.log
+migration_output.json
+migration_log.txt
