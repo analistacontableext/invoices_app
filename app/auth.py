@@ -6,12 +6,20 @@ Requiere el archivo oauth_client.json (Client ID + Secret de un OAuth Client
 tipo "Aplicación web", descargado desde Google Cloud Console) junto a script.py.
 """
 import json
+import os
 from pathlib import Path
 
 import streamlit as st
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
+
+# Google puede devolver un scope más amplio del que pedimos si la misma
+# cuenta ya autorizó otros permisos para el mismo proyecto de Google Cloud
+# (ej. al usar Apps Script/Document AI bajo el mismo proyecto) — sin esto,
+# oauthlib rechaza el login entero con "Scope has changed" aunque el scope
+# devuelto SÍ incluya todo lo que pedimos.
+os.environ.setdefault("OAUTHLIB_RELAX_TOKEN_SCOPE", "1")
 
 _OAUTH_CLIENT_FILE = Path(__file__).resolve().parent.parent / "oauth_client.json"
 
@@ -48,8 +56,6 @@ _SCOPES = [
 ALLOWLIST = {
     "analista.contable.ext@lindcorp.pe",
     "brian.campos@lindcorp.pe",
-    "francisco.esparza@lindcorp.pe",
-    "sundry.sahijramani@lindcorp.pe",
 }
 
 # Guarda el code_verifier (PKCE) de cada intento de login, indexado por el
